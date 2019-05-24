@@ -1,6 +1,6 @@
 import pytest
 
-from SimulationSystem.Service import service
+from simulation_system.service import service
 
 def test_service():
     num = 10
