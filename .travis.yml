@@ -2,6 +2,6 @@ language: python
 python: 3.6
 
 install:
-  - pip install -r requerements.txt
+  - pip install -r requirments.txt
 script:
   - pytest
