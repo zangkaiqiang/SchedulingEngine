@@ -6,6 +6,7 @@ from random import randint
 import random
 random.seed(0)
 
+#随机生成服务包
 def service(num):
     services = []
     for i in range(num):
@@ -16,6 +17,8 @@ def service(num):
         dict['start'] = randint(0,12*60)
         services.append(dict)
     return services
+
+
 
 if __name__ == '__main__':
     service(100)
