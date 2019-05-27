@@ -2,9 +2,15 @@
 服务模拟
 '''
 import pandas as pd
-from random import randint
 import random
+import datetime
+from random import randint
+
+from engine.engine import engine
+
+
 random.seed(0)
+
 
 #随机生成服务包
 def service(num):
@@ -12,13 +18,20 @@ def service(num):
     for i in range(num):
         dict = {}
         dict['id'] = i
-        dict['senior_id'] = randint(1,10)
-        dict['time'] = randint(10,100)
-        dict['start'] = randint(0,12*60)
+        dict['senior_id'] = randint(1,30)
+        dict['time'] = randint(10*60,100*60)
+        dict['start'] = randint(0,12*60*60)
+        dict['end'] = dict['start']+randint(10*60,100*60)
+        dict['loss'] = randint(10,100000)
+        dict['worker_type'] = randint(1,10)
+        dict['service_type'] = randint(1,10)
         services.append(dict)
-    return services
 
+    df = pd.DataFrame(services)
+    df = df.set_index('id')
+    df['create_time'] = datetime.datetime.now()
+    df.to_sql('service',engine,if_exists='replace')
 
 
 if __name__ == '__main__':
-    service(100)
+    service(200)

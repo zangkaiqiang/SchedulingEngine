@@ -5,15 +5,15 @@ import datetime
 import sqlalchemy
 engine = sqlalchemy.create_engine('mysql+pymysql://kai:vsi666666@localhost/learn?charset=utf8')
 
-worker = worker.worker(10)
-service = service.service(100)
+# worker = worker.worker(10)
+# service = service.service(100)
 
-df_service = pd.DataFrame(service)
+df_service = pd.read_sql('select * from service', engine)
 df_service = df_service.sort_values(['start'])
 df_service['worker'] = None
 df_service['actual_start'] = None
 
-df_worker = pd.DataFrame(worker)
+df_worker = pd.read_sql('select * from worker', engine)
 df_worker['end'] = 0
 
 for i in range(len(df_service)):

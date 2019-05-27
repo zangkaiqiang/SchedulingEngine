@@ -1,5 +1,9 @@
-from random import randint
+import pandas as pd
 import random
+import datetime
+from random import randint
+
+from engine.engine import engine
 random.seed(0)
 
 def worker(num):
@@ -7,9 +11,13 @@ def worker(num):
     for i in range(num):
         dict = {}
         dict['id'] = i
-        dict['type'] = randint(1,num)
+        dict['type'] = randint(1,10)
         workers.append(dict)
-    return workers
+    df = pd.DataFrame(workers)
+    df = df.set_index('id')
+    df['create_time'] = datetime.datetime.now()
+
+    df.to_sql('worker',engine,if_exists='replace')
 
 if __name__ == '__main__':
-    worker(10)
+    worker(20)
