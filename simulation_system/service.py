@@ -30,8 +30,9 @@ def service(num):
     df = pd.DataFrame(services)
     df = df.set_index('id')
     df['create_time'] = datetime.datetime.now()
-    df.to_sql('service',engine,if_exists='replace')
+    return df
 
 
 if __name__ == '__main__':
-    service(200)
+    df_services = service(200)
+    df_services.to_sql('service',engine,if_exists='replace')

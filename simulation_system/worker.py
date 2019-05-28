@@ -17,7 +17,9 @@ def worker(num):
     df = df.set_index('id')
     df['create_time'] = datetime.datetime.now()
 
-    df.to_sql('worker',engine,if_exists='replace')
+    return df
+
 
 if __name__ == '__main__':
-    worker(20)
+    df = worker(20)
+    df.to_sql('worker',engine,if_exists='replace')
