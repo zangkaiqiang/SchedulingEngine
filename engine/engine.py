@@ -1,2 +1,2 @@
 import sqlalchemy
-engine = sqlalchemy.create_engine('mysql+pymysql://kai:vsi666666@localhost/learn?charset=utf8')
+engine = sqlalchemy.create_engine('mysql+pymysql://root:vsi666666@localhost:33060/scheduling?charset=utf8')
