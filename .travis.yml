@@ -5,7 +5,3 @@ install:
   - pip install -r requirments.txt
 script:
   - python -m pytest
-
-notifications:
-  email:
-    on_success: always
