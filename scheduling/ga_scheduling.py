@@ -15,17 +15,7 @@ df_worker = pd.read_sql('select * from worker limit 5', engine)
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create('Individual', list, fitness=creator.FitnessMin)
 
-creator.create("FitnessMinGroup", base.Fitness, weights=(-1.0,))
-creator.create("IndividualGroup", list, fitness=creator.FitnessMinGroup)
-
 toolbox = base.Toolbox()
-
-
-def gen_indices(service_length, worker_length):
-    service_list = random.sample(range(service_length), service_length)
-    cutting_points = random.sample(range(service_length), worker_length - 1)
-
-    return service_list
 
 
 def worker_service(service_list, cutting_points):
@@ -39,12 +29,16 @@ def worker_service(service_list, cutting_points):
     return worker_services
 
 
+# 添加多个基因
 toolbox.register('indices', random.sample, range(len(df_service)), len(df_service))
 toolbox.register('cutting', random.sample, range(len(df_service)), len(df_worker))
+
+# 初始化种群
 toolbox.register('individual', tools.initCycle, creator.Individual, (toolbox.indices, toolbox.cutting))
 toolbox.register('population', tools.initRepeat, list, toolbox.individual)
 
 
+# 评估方法
 def evaluate(individual):
     service_mat = worker_service(individual[0], individual[1])
     df_eval = df_service.copy()
@@ -65,6 +59,7 @@ def evaluate(individual):
     return df_result.delay.sum(),
 
 
+# 超时计算
 def add_delay(df_eval_worker, atom):
     df_eval_worker['order'] = atom[:]
     df_eval_worker = df_eval_worker.sort_values(['order'])
@@ -83,6 +78,7 @@ def add_delay(df_eval_worker, atom):
     return df_eval_worker
 
 
+# 添加配对，变异，择优
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
@@ -91,7 +87,7 @@ toolbox.register("evaluate", evaluate)
 
 def run():
     random.seed(11)
-    pop = toolbox.population(n=300)
+    population = toolbox.population(n=300)
 
     hof = tools.HallOfFame(3)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -100,10 +96,11 @@ def run():
     stats.register("min", np.min)
     stats.register("max", np.max)
 
-    algorithms.eaSimple(pop, toolbox, 0.7, 0.2, 10, stats=stats, halloffame=hof)
+    algorithms.eaSimple(population, toolbox, 0.7, 0.2, 10, stats=stats, halloffame=hallof)
 
-    return pop, stats, hof
+    return population, stats, hof
 
 
 if __name__ == '__main__':
-    pop, stats, hof = run()
+    run()
+    # pop, stats, hof = run()
