@@ -6,7 +6,11 @@ from scheduling.ga_scheduling import run
 
 
 def test_ga():
-    pop, stats, hof = run()
+    '''
+
+    :return:
+    '''
+    # pop, stats, hof = run()
     # for order in pop:
     #     get_delay(order)
     #
