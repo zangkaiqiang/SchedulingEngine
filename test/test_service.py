@@ -12,4 +12,4 @@ def test_worker():
     num = 100
     df = worker(num)
 
-    assert len(df) == 99
+    assert len(df) == num
