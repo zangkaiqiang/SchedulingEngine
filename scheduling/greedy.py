@@ -1,32 +1,32 @@
-from simulation_system import service,worker
-import pandas as pd
 import datetime
 
-import sqlalchemy
-engine = sqlalchemy.create_engine('mysql+pymysql://kai:vsi666666@localhost/learn?charset=utf8')
+import pandas as pd
 
-# worker = worker.worker(10)
-# service = service.service(100)
+from engine.engine import engine
 
-df_service = pd.read_sql('select * from service', engine)
-df_service = df_service.sort_values(['start'])
-df_service['worker'] = None
+df_service = pd.read_sql('select earliest,latest,time from service limit 50', engine)
+df_worker = pd.read_sql('select * from worker limit 3', engine)
+
+
+df_service = df_service.sort_values(['earliest'])
 df_service['actual_start'] = None
+df_service['actual_end'] = None
 
-df_worker = pd.read_sql('select * from worker', engine)
 df_worker['end'] = 0
-
+worker = []
+actual_start = []
 for i in range(len(df_service)):
-    # s = df_service.iloc[i]
     df_worker = df_worker.sort_values(['end'])
-    df_service.worker.iloc[i] = df_worker.id.iloc[0]
-
-    service_start = df_service.start.iloc[i]
+    worker.append(df_worker.id.iloc[0])
+    service_start = df_service.earliest.iloc[i]
     work_end = df_worker.end.iloc[0]
-    df_service.actual_start.iloc[i] = max(service_start,work_end)
-    df_worker.end.iloc[0] = df_service.actual_start.iloc[i]+df_service.time.iloc[i]
+    actual_start.append(max(service_start, work_end))
+    df_worker.loc[df_worker.id == worker[i], 'end'] = actual_start[i] + df_service.time.iloc[i]
 
+df_service['actual_start'] = actual_start
+df_service['worker'] = worker
+df_service['actual_end'] = df_service['actual_start'] + df_service['time']
+df_service['delay'] = df_service['actual_start'] - df_service['latest']
+df_service.loc[df_service.delay < 0, 'delay'] = 0
 df_service['create_time'] = datetime.datetime.now()
-df_service.to_sql('greedy',engine,if_exists='replace',index=False)
-
-
+df_service.to_sql('greedy', engine, if_exists='replace', index=False)

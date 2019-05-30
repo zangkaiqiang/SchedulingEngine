@@ -10,13 +10,13 @@ def test_ga():
 
     :return:
     '''
-    # pop, stats, hof = run()
-    # for order in pop:
-    #     get_delay(order)
-    #
-    # print('hof*************************')
-    # for order in hof:
-    #     get_delay(order)
+
+
+def test_delay():
+    '''
+
+    :return:
+    '''
 
 
 def get_delay(order):
@@ -46,4 +46,3 @@ def get_delay(order):
 
 if __name__ == '__main__':
     test_ga()
-
