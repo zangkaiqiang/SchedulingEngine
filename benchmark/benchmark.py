@@ -55,3 +55,4 @@ def judge(df_):
 
 
 judge(df_delay)
+df_delay.to_sql('ga_scheduling_benchmark', engine, if_exists='replace', index=False)

@@ -2,7 +2,6 @@ import pytest
 import pandas as pd
 
 from engine.engine import engine
-from scheduling.ga_scheduling import run
 
 
 def test_ga():
