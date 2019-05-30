@@ -7,7 +7,7 @@ from simulation_system.worker import worker
 def test_service():
     num = 10
     df = service(num)
-    assert len(df)==num
+    assert len(df) == num
 
 
 def test_worker():

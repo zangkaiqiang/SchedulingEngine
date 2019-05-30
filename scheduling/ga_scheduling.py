@@ -26,10 +26,13 @@ def evaluate(individual):
     df['worker'] = worker
     df = df.sort_values(['worker', 'order'])
 
-    # 定义结果的容器
+    # 添加超时
     delay = evaluate_delay(df)
 
-    return delay,
+    # 添加照护员平均
+    worker_avg = evaluate_avg(df)
+
+    return delay, worker_avg
 
 
 # 超时计算评估
@@ -59,6 +62,13 @@ def evaluate_delay(df):
         delay = delay + df_delay['delay'].sum()
 
     return delay
+
+
+# 方差评估
+def evaluate_avg(df_):
+    df = df_.copy()
+    df = df[['worker', 'time']].groupby(['worker'], as_index=False).sum()
+    return df.time.std()
 
 
 # 定义新的混合进化模式，不同的基因组选择不同的策略
@@ -92,7 +102,7 @@ def ga(core_num, pop_num, n):
     random.seed(11)
 
     # 定义类型
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -1.0))
     creator.create('Individual', list, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
