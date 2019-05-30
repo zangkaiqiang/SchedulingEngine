@@ -1,5 +1,6 @@
 import random
 import datetime
+import multiprocessing
 
 import pandas as pd
 import numpy as np
@@ -70,7 +71,7 @@ def mixed_mate(ind1, ind2):
 # 定义混合突变模式，不同的基因可以采用不同的突变
 def mixed_mutate(individual, indpb):
     tools.mutShuffleIndexes(individual[0], indpb)
-    tools.mutUniformInt(individual[1], 1, len(df_service)-1, 0.2)
+    tools.mutUniformInt(individual[1], 1, len(df_service) - 1, 0.2)
     return individual,
 
 
@@ -87,7 +88,7 @@ def store(hof):
     df.to_sql('ga_scheduling', engine, if_exists='replace', index=False)
 
 
-def ga():
+def ga(core_num, pop_num, n):
     random.seed(11)
 
     # 定义类型
@@ -98,7 +99,7 @@ def ga():
 
     # 添加多个基因
     toolbox.register('indices', random.sample, range(len(df_service)), len(df_service))
-    toolbox.register('cutting', random.sample, range(1, len(df_service)-1), len(df_worker) - 1)
+    toolbox.register('cutting', random.sample, range(1, len(df_service) - 1), len(df_worker) - 1)
 
     # 定义初始化种群方法
     toolbox.register('individual', tools.initCycle, creator.Individual, (toolbox.indices, toolbox.cutting))
@@ -110,8 +111,11 @@ def ga():
     toolbox.register("select", tools.selTournament, tournsize=3)
     toolbox.register("evaluate", evaluate)
 
+    pool = multiprocessing.Pool(processes=core_num)
+    toolbox.register("map", pool.map)
+
     # 初始化种群
-    population = toolbox.population(n=300)
+    population = toolbox.population(n=pop_num)
 
     # 保存最有结果
     hof = tools.HallOfFame(1)
@@ -124,13 +128,13 @@ def ga():
     stats.register("max", np.max)
 
     # 迭代
-    algorithms.eaSimple(population, toolbox, 0.7, 0.2, 300, stats=stats, halloffame=hof)
+    algorithms.eaSimple(population, toolbox, 0.7, 0.2, n, stats=stats, halloffame=hof)
 
     return population, stats, hof
 
 
 def run():
-    p, s, h = ga()
+    p, s, h = ga(8, 300, 500)
     store(h[0])
 
 

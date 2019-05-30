@@ -4,8 +4,8 @@ import pandas as pd
 
 from engine.engine import engine
 
-df_service = pd.read_sql('select earliest,latest,time from service limit 50', engine)
-df_worker = pd.read_sql('select * from worker limit 3', engine)
+df_service = pd.read_sql('select id, earliest, latest, time from service', engine)
+df_worker = pd.read_sql('select * from worker limit 5', engine)
 
 
 df_service = df_service.sort_values(['earliest'])
