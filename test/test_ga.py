@@ -1,7 +1,11 @@
 import pytest
+
+import numpy as np
 import pandas as pd
 
 from engine.engine import engine
+from simulation_system.service import service
+from scheduling.ga_scheduling import evaluate_delay
 
 
 def test_ga():
@@ -16,6 +20,11 @@ def test_delay():
 
     :return:
     '''
+    df = service(100)
+    df['worker'] = np.random.randint(2, size=100)
+    delay = evaluate_delay(df)
+
+    assert delay > 0
 
 
 def get_delay(order):
