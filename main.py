@@ -1,6 +1,7 @@
 import argparse
 
 from scheduling.ga_scheduling import ga
+from scheduling.ga_scheduling import store
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="progrom description")
@@ -10,4 +11,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    ga(args.cores, args.pop, args.numbers)
+    p, s, h = ga(args.cores, args.pop, args.numbers)
+    store(h[0])
