@@ -10,12 +10,10 @@ from deap import tools
 from deap import algorithms
 
 from engine.engine import engine
-from simulation_system import service
-from simulation_system import worker
 from scheduling.ga_eval import *
 
-df_service = service.service(100)
-df_worker = worker.worker(5)
+df_service = pd.read_sql('select id, earliest, latest, time from service', engine)
+df_worker = pd.read_sql('select * from worker limit 5', engine)
 
 
 # 评估方法
