@@ -33,7 +33,7 @@ def evaluate(individual):
     # 添加照护员平均
     worker_avg = evaluate_avg(df)
 
-    return delay, worker_avg
+    return delay + worker_avg * 200,
 
 
 # 定义新的混合进化模式，不同的基因组选择不同的策略
@@ -67,7 +67,7 @@ def ga(core_num, mu, ngen):
     random.seed(11)
 
     # 定义类型
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -1.0))
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
     creator.create('Individual', list, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
