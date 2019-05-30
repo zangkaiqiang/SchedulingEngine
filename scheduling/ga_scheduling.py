@@ -10,10 +10,12 @@ from deap import tools
 from deap import algorithms
 
 from engine.engine import engine
+from simulation_system import service
+from simulation_system import worker
 from scheduling.ga_eval import *
 
-df_service = pd.read_sql('select id, earliest, latest, time from service', engine)
-df_worker = pd.read_sql('select * from worker limit 5', engine)
+df_service = service.service(100)
+df_worker = worker.worker(5)
 
 
 # 评估方法
@@ -63,11 +65,11 @@ def store(hof):
     df.to_sql('ga_scheduling', engine, if_exists='replace', index=False)
 
 
-def ga(core_num, pop_num, n):
+def ga(core_num, mu, ngen):
     random.seed(11)
 
     # 定义类型
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -200))
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -1.0))
     creator.create('Individual', list, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
@@ -90,22 +92,24 @@ def ga(core_num, pop_num, n):
     toolbox.register("map", pool.map)
 
     # 初始化种群
-    population = toolbox.population(n=pop_num)
+    pop = toolbox.population(mu)
 
     # 保存最有结果
     hof = tools.HallOfFame(1)
+    # hof = tools.ParetoFront()
 
     # 添加统计指标
     stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", np.mean)
-    stats.register("std", np.std)
-    stats.register("min", np.min)
-    stats.register("max", np.max)
+    stats.register("avg", np.mean, axis=0)
+    stats.register("std", np.std, axis=0)
+    stats.register("min", np.min, axis=0)
+    stats.register("max", np.max, axis=0)
 
     # 迭代
-    algorithms.eaSimple(population, toolbox, 0.7, 0.2, n, stats=stats, halloffame=hof)
-
-    return population, stats, hof
+    # algorithms.eaSimple(pop, toolbox, 0.7, 0.2, 40, stats=stats, halloffame=hof)
+    pop, logbook = algorithms.eaMuPlusLambda(pop, toolbox, mu=mu, lambda_=mu * 2, cxpb=0.7, mutpb=0.2,
+                                             ngen=ngen, stats=stats, halloffame=hof)
+    return pop, stats, hof
 
 
 def run():
