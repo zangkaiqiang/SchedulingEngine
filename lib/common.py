@@ -17,7 +17,7 @@ class HallOfFamex(tools.HallOfFame):
             self.insert(population[0])
 
         for ind in population:
-            if sum(ind.fitness) > sum(self[-1].fitness) or len(self) < self.maxsize:
+            if sum(ind.fitness.wvalues) < sum(self[-1].fitness.wvalues) or len(self) < self.maxsize:
                 for hofer in self:
                     # Loop through the hall of fame to check for any
                     # similar individual

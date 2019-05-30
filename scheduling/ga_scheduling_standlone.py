@@ -15,7 +15,7 @@ from lib.optimization import evaluate_delay
 from lib.optimization import evaluate_avg
 from lib.common import HallOfFamex
 
-df_service = service.service(200)
+df_service = service.service(20)
 df_worker = worker.worker(5)
 
 
@@ -36,7 +36,7 @@ def evaluate(individual):
     # 添加照护员平均
     worker_avg = evaluate_avg(df)
 
-    return delay, worker_avg * 200
+    return delay, worker_avg
 
 
 # 定义新的混合进化模式，不同的基因组选择不同的策略
@@ -70,7 +70,7 @@ def ga(core_num, mu, ngen):
     random.seed(11)
 
     # 定义类型
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -1.0))
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -200.0))
     creator.create('Individual', list, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
@@ -114,7 +114,7 @@ def ga(core_num, mu, ngen):
 
 
 def run():
-    p, s, h = ga(8, 300, 100)
+    p, s, h = ga(8, 100, 100)
     store(h[0])
 
 
