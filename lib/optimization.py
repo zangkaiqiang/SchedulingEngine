@@ -1,5 +1,5 @@
 # 超时计算评估
-def evaluate_delay(df):
+def evaluate_delay(df, coefficient=1):
     # 初始化延迟
     delay = 0
 
@@ -24,12 +24,11 @@ def evaluate_delay(df):
         df_delay.loc[df_delay.delay < 0, 'delay'] = 0
         delay = delay + df_delay['delay'].sum()
 
-    return delay
+    return delay * coefficient
 
 
 # 方差评估
-def evaluate_avg(df_):
+def evaluate_avg(df_, coefficient=1):
     df = df_.copy()
     df = df[['worker', 'time']].groupby(['worker'], as_index=False).sum()
-    return df.time.std()
-
+    return df.time.std() * coefficient

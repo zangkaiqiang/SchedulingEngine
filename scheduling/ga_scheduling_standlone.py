@@ -9,13 +9,14 @@ from deap import base
 from deap import tools
 from deap import algorithms
 
-from engine.engine import engine
+from simulation_system import service
+from simulation_system import worker
 from lib.optimization import evaluate_delay
 from lib.optimization import evaluate_avg
 from lib.common import HallOfFamex
 
-df_service = pd.read_sql('select id, earliest, latest, time from service', engine)
-df_worker = pd.read_sql('select * from worker limit 5', engine)
+df_service = service.service(200)
+df_worker = worker.worker(5)
 
 
 # 评估方法
@@ -35,7 +36,7 @@ def evaluate(individual):
     # 添加照护员平均
     worker_avg = evaluate_avg(df)
 
-    return delay, worker_avg * 200,
+    return delay, worker_avg * 200
 
 
 # 定义新的混合进化模式，不同的基因组选择不同的策略
@@ -62,7 +63,7 @@ def store(hof):
     df['worker'] = worker
     df = df.sort_values(['worker', 'order'])
     df['create_time'] = datetime.datetime.now()
-    df.to_sql('ga_scheduling', engine, if_exists='replace', index=False)
+    return df
 
 
 def ga(core_num, mu, ngen):
