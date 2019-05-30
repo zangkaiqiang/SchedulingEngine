@@ -20,6 +20,9 @@ df_worker = pd.read_sql('select * from worker limit 5', engine)
 
 # 评估方法
 def evaluate(individual):
+    if len(set(individual[1])) < len(individual[1]):
+        return 1 << 100, 1 << 100
+
     df = df_service.copy()
 
     df['order'] = individual[0]
