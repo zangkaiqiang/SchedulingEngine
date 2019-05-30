@@ -21,7 +21,7 @@ df_worker = pd.read_sql('select * from worker limit 5', engine)
 # 评估方法
 def evaluate(individual):
     if len(set(individual[1])) < len(individual[1]):
-        return 1 << 100, 1 << 100
+        return 1 << 100,
 
     df = df_service.copy()
 
@@ -38,7 +38,8 @@ def evaluate(individual):
     # 添加照护员平均
     worker_avg = evaluate_avg(df)
 
-    return delay, worker_avg
+    return delay + worker_avg * 200,
+    # return delay, worker_avg
 
 
 # 定义新的混合进化模式，不同的基因组选择不同的策略
@@ -72,7 +73,8 @@ def ga(core_num, mu, ngen):
     random.seed(11)
 
     # 定义类型
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0, -200.0))
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+    # creator.create("FitnessMin", base.Fitness, weights=(-1.0, -200.0))
     creator.create('Individual', list, fitness=creator.FitnessMin)
 
     toolbox = base.Toolbox()
@@ -98,8 +100,8 @@ def ga(core_num, mu, ngen):
     pop = toolbox.population(mu)
 
     # 保存最有结果
-    hof = HallOfFamex(1)
-    # hof = tools.ParetoFront()
+    # hof = HallOfFamex(1)
+    hof = tools.ParetoFront()
 
     # 添加统计指标
     stats = tools.Statistics(lambda ind: ind.fitness.values)
