@@ -5,7 +5,7 @@ import pandas as pd
 
 from engine.engine import engine
 from simulation_system.service import service
-from scheduling.ga_scheduling import evaluate_delay
+from scheduling.ga_eval import evaluate_delay
 
 
 def test_ga():
