@@ -32,3 +32,5 @@ def evaluate_avg(df_, coefficient=1):
     df = df_.copy()
     df = df[['worker', 'time']].groupby(['worker'], as_index=False).sum()
     return df.time.std() * coefficient
+
+

@@ -29,8 +29,8 @@ for i in range(100):
     print(ind1)
 
 for i in range(100):
-    ind1 = random.sample(range(10), 10)
-    ind2 = random.sample(range(10), 10)
+    ind1 = random.sample(range(100), 10)
+    ind2 = random.sample(range(100), 10)
     tools.cxPartialyMatched(ind1, ind2)
     print(ind1)
     print(ind2)
@@ -45,4 +45,6 @@ while True:
     if len(set(ind1)) != len(set(ind2)):
         print(len(set(ind1)), len(set(ind2)))
     tools.cxTwoPoint(ind1, ind2)
+
+
 

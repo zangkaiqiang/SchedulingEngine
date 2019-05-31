@@ -6,8 +6,8 @@ from scheduling.ga_scheduling import store
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="progrom description")
     parser.add_argument('--cores', type=int, help='cpu cores', default=8)
-    parser.add_argument('--mu', type=int, help='pop numbers', default=100)
-    parser.add_argument('--ngen', type=int, help='iter numbers', default=100)
+    parser.add_argument('--mu', type=int, help='pop numbers', default=300)
+    parser.add_argument('--ngen', type=int, help='iter numbers', default=300)
 
     args = parser.parse_args()
 

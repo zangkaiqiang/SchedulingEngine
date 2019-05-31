@@ -12,7 +12,7 @@ from deap import algorithms
 from engine.engine import engine
 from lib.optimization import evaluate_delay
 from lib.optimization import evaluate_avg
-from lib.common import HallOfFamex
+from lib import toolsx
 
 df_service = pd.read_sql('select id, earliest, latest, time from service', engine)
 df_worker = pd.read_sql('select * from worker limit 5', engine)
@@ -45,14 +45,14 @@ def evaluate(individual):
 # 定义新的混合进化模式，不同的基因组选择不同的策略
 def mixed_mate(ind1, ind2):
     tools.cxPartialyMatched(ind1[0], ind2[0])
-    tools.cxTwoPoint(ind1[1], ind2[1])
+    toolsx.cx_pick(ind1[1], ind2[1])
     return ind1, ind2
 
 
 # 定义混合突变模式，不同的基因可以采用不同的突变
 def mixed_mutate(individual, indpb):
     tools.mutShuffleIndexes(individual[0], indpb)
-    tools.mutUniformInt(individual[1], 1, len(df_service) - 1, 0.2)
+    toolsx.mut_uniform_unique(individual[1], 1, len(df_service) - 1, 0.2)
     return individual,
 
 
@@ -101,7 +101,7 @@ def ga(core_num, mu, ngen):
 
     # 保存最有结果
     # hof = HallOfFamex(1)
-    hof = tools.ParetoFront()
+    hof = tools.HallOfFame(1)
 
     # 添加统计指标
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -111,14 +111,14 @@ def ga(core_num, mu, ngen):
     stats.register("max", np.max, axis=0)
 
     # 迭代
-    # algorithms.eaSimple(pop, toolbox, 0.7, 0.2, 40, stats=stats, halloffame=hof)
-    pop, logbook = algorithms.eaMuPlusLambda(pop, toolbox, mu=mu, lambda_=mu * 2, cxpb=0.7, mutpb=0.2,
-                                             ngen=ngen, stats=stats, halloffame=hof)
+    algorithms.eaSimple(pop, toolbox, 0.7, 0.2, ngen, stats=stats, halloffame=hof)
+    # pop, logbook = algorithms.eaMuPlusLambda(pop, toolbox, mu=mu, lambda_=mu * 2, cxpb=0.7, mutpb=0.2,
+    #                                          ngen=ngen, stats=stats, halloffame=hof)
     return pop, stats, hof
 
 
 def run():
-    p, s, h = ga(8, 300, 100)
+    p, s, h = ga(8, 300, 300)
     store(h[0])
 
 
