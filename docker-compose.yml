@@ -1,0 +1,13 @@
+version: "3"
+services:
+
+   db:
+     image: mysql:5.7
+     volumes:
+       - ./db_data:/var/lib/mysql
+     restart: always
+     ports:
+       - "13306:3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: abcd
+       MYSQL_DATABASE: mydatabase
