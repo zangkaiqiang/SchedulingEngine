@@ -30,5 +30,40 @@ def delete(id):
     df.to_sql('greedy_update', engine, if_exists='replace')
 
 
+def add(task, org_id, staff_id):
+    # 添加task为指定员工
+    tasks = get_tasks(org_id, staff_id)
+    tasks_adjust = need_adjust_tasks(task, tasks)
+    tasks_adjust = adjust_task(task, tasks_adjust)
+
+    tasks = update_task(task, tasks, tasks_adjust)
+
+    return tasks
+
+
+def get_tasks(org_id, staff_id):
+    # get all tasks
+
+    return 0
+
+
+def need_adjust_tasks(task, tasks):
+    # 找到需要在task后执行的tasks
+
+    return 0
+
+
+def adjust_task(task, tasks_adjust):
+    # 调整task后执行的tasks
+
+    return 0
+
+
+def update_task(task, tasks, tasks_adjust):
+    # 将调整过的tasks_adjust更新如tasks
+
+    return tasks
+
+
 if __name__ == '__main__':
     delete(141)
